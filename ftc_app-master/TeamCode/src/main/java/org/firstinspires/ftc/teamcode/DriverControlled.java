@@ -32,16 +32,16 @@ public class DriverControlled extends OpMode {
         motorDriveRightFront = hardwareMap.dcMotor.get("motor_drive_right_front");
         motorDriveLeftBack = hardwareMap.dcMotor.get("motor_drive_left_back");
         motorDriveRightBack = hardwareMap.dcMotor.get("motor_drive_right_back");
-        motorLiftLeft = hardwareMap.dcMotor.get("motor_lift_left")
-        motorLiftRight = hardwareMap.dcMotor.get("motor_lift_right")
+        motorLiftLeft = hardwareMap.dcMotor.get("motor_lift_left");
+        motorLiftRight = hardwareMap.dcMotor.get("motor_lift_right");
         
         // Reverse directions of backwards motors
         motorDriveRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         motorDriveRightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         
         // Reset motor encoders and set to run using encoders
-        setDriveMotorsMode(DcMotorSimple.RunMode.STOP_AND_RESET_ENCODER)
-        setDriveMotorsMode(DcMotorSimple.RunMode.RUN_USING_ENCODER);
+        setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMotorsMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
@@ -60,6 +60,17 @@ public class DriverControlled extends OpMode {
         motorDriveRightBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.right_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x, power));
         motorDriveLeftBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, -gamepad1.right_stick_x + gamepad1.right_stick_y - gamepad1.left_stick_x, power));
         motorDriveRightFront.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, -gamepad1.right_stick_x + gamepad1.right_stick_y + gamepad1.left_stick_x, power));
+
+        if (gamepad1.b) {
+            motorLiftLeft.setPower(-1);
+            motorLiftRight.setPower(-1);
+        } else if (gamepad1.x) {
+            motorLiftLeft.setPower(1);
+            motorLiftRight.setPower(1);
+        } else {
+            motorLiftLeft.setPower(0);
+            motorLiftRight.setPower(0);
+        }
 
         /*
         * Debugging code for checking which motor and what direction is being influenced by each control
@@ -89,7 +100,7 @@ public class DriverControlled extends OpMode {
 
     }
     
-    private void setDriveMotorsMode(DcMotorSimple.RunMode mode) {
+    private void setDriveMotorsMode(DcMotor.RunMode mode) {
         motorDriveLeftFront.setMode(mode);
         motorDriveRightFront.setMode(mode);
         motorDriveLeftBack.setMode(mode);
