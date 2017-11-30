@@ -9,6 +9,11 @@ public class AutoAction {
 
     //Used to tell the robot when to stop
     public boolean done;
+    public AutonomousOpMode opmode;
+
+    public AutoAction(AutonomousOpMode opmode) {
+        this.opmode = opmode;
+    }
 
     //Runs once when command line brings autonomous to this class
     public void init() {
