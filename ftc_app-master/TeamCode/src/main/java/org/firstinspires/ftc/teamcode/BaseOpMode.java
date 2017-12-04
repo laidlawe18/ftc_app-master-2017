@@ -21,6 +21,8 @@ public class BaseOpMode extends OpMode {
     DcMotor motorDriveRightBack;
     DcMotor motorLiftLeft;
     DcMotor motorLiftRight;
+    DcMotor motorBeltLeft;
+    DcMotor motorBeltRight;
     Servo servoStopLeft;
     Servo servoStopRight;
     Servo servoJewel;
@@ -54,6 +56,8 @@ public class BaseOpMode extends OpMode {
         motorDriveRightBack = hardwareMap.dcMotor.get("motor_drive_right_back");
         motorLiftLeft = hardwareMap.dcMotor.get("motor_lift_left");
         motorLiftRight = hardwareMap.dcMotor.get("motor_lift_right");
+        motorBeltLeft = hardwareMap.dcMotor.get("motor_belt_left");
+        motorBeltRight = hardwareMap.dcMotor.get("motor_belt_right");
 
         servoStopLeft = hardwareMap.servo.get("servo_stop_left");
         servoStopRight = hardwareMap.servo.get("servo_stop_right");

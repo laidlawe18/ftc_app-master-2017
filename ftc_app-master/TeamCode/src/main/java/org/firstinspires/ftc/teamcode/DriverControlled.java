@@ -117,8 +117,8 @@ public class DriverControlled extends BaseOpMode {
         }
 
         motorDriveLeftFront.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, lfPower * powerLeftFront, power));
-        //motorDriveRightBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, rbPower * powerRightBack, power));
-        //motorDriveLeftBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, lbPower * powerLeftBack, power));
+        motorDriveRightBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, rbPower * powerRightBack, power));
+        motorDriveLeftBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, lbPower * powerLeftBack, power));
         motorDriveRightFront.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, rfPower * powerRightFront, power));
 
         if (gamepad1.b) {
@@ -213,14 +213,14 @@ public class DriverControlled extends BaseOpMode {
         lastAngle = getHeading();
 
         if (gamepad1.right_bumper) {
-            motorDriveLeftBack.setPower(1);
-            motorDriveRightBack.setPower(-1);
+            motorBeltLeft.setPower(1);
+            motorBeltRight.setPower(1);
         } else if (gamepad1.right_trigger > 0) {
-            motorDriveLeftBack.setPower(-1);
-            motorDriveRightBack.setPower(1);
+            motorBeltLeft.setPower(-1);
+            motorBeltRight.setPower(-1);
         } else {
-            motorDriveLeftBack.setPower(0);
-            motorDriveRightBack.setPower(0);
+            motorBeltLeft.setPower(0);
+            motorBeltRight.setPower(0);
         }
         /*
         * Debugging code for checking which motor and what direction is being influenced by each control
