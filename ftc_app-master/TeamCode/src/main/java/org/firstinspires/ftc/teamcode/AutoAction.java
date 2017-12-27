@@ -7,10 +7,11 @@ package org.firstinspires.ftc.teamcode;
 //Sets up a number of methods that will be used by several daughter classes
 public class AutoAction {
 
-    //Used to tell the robot when to stop
+    //Tells the robot when to stop
     public boolean done;
     public AutonomousOpMode opmode;
 
+    //****
     public AutoAction(AutonomousOpMode opmode) {
         this.opmode = opmode;
     }

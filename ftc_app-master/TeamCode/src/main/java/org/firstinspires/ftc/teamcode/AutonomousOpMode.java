@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -14,15 +15,18 @@ public class AutonomousOpMode extends BaseOpMode {
 
     Queue<AutoAction> commands;
     AutoAction currCommand;
+    HashMap<String, Object> data;
 
     @Override
     public void init() {
         super.init();
+        data = new HashMap<String, Object>();
         commands = new LinkedList<AutoAction>();
     }
 
     @Override
     public void loop() {
+        super.loop();
         if (commands.isEmpty() && currCommand == null) {
             stop();
             return;
@@ -46,6 +50,26 @@ public class AutonomousOpMode extends BaseOpMode {
         } else {
             currCommand.update();
         }
+    }
+
+    public void addData(String id, Object obj) {
+        this.data.put(id, obj);
+    }
+
+    public int getDataInt(String id) {
+        return (int) this.data.get(id);
+    }
+
+    public double getDataDouble(String id) {
+        return (double) this.data.get(id);
+    }
+
+    public String getDataString(String id) {
+        return (String) this.data.get(id);
+    }
+
+    public Object getData(String id) {
+        return this.data.get(id);
     }
 
 }

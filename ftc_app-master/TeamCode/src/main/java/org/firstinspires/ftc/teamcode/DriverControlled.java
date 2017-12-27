@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+//This imports all of the methods we need to run the program
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,24 +8,26 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import java.util.ArrayList;
 
 /**
  * Created by BHS-Lab on 10/13/2017.
  */
 
+//Sets up this file to be a teleop file
 @TeleOp(name="DriverControlled")
+
+//Allows us to easily control the robot inn the driving period - it's extends BaseOpMode, which means that this code will have access to the motors/servos/sensors defined in that class
 public class DriverControlled extends BaseOpMode {
 
     // Power multiplier for the drive motors
     double power = .5;
-
     double powerLeftFront = 1.0;
     double powerRightFront = 1.0;
     double powerLeftBack = 1.0;
     double powerRightBack = 1.0;
 
+    //
     double lastAngle;
 
     //Counter variables for the servos
@@ -33,27 +36,32 @@ public class DriverControlled extends BaseOpMode {
     double servoRelicCounter = 3.0;
     double servoRelicExtendCounter = 3.0;
 
-    // Starting angle of the gyro sensor to use as a baseline
-    double gyroZero;
-
-
+    //
     ArrayList<Double> lastFiveAngles;
 
+    //Runs once when driver hits INIT, but before they hit PLAY
     @Override
     public void init() {
+
+        //Calls elements of the parent class
         super.init();
+
         // Reset motor encoders and set to run using encoders
         setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMotorsMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    //Runs continuously after the driver hits PLAY
     @Override
     public void loop() {
+
+        //Displays variable values on phone log, so we can track what's happening to them if needed
         telemetry.addData("y", gamepad1.right_stick_y);
         telemetry.addData("x", gamepad1.right_stick_x);
         telemetry.addData("power", power);
         telemetry.addData("servoStopLeft position", servoStopLeft.getPosition());
         telemetry.addData("servoStopRight position", servoStopRight.getPosition());
+
 
         if (gamepad1.y && power < 1) {
             power += .003;
@@ -65,11 +73,11 @@ public class DriverControlled extends BaseOpMode {
         telemetry.addData("left back power", powerLeftBack);
         telemetry.addData("right front power", powerRightFront);
         telemetry.addData("right back power", powerRightBack);
-        double lfPower = gamepad1.right_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x;
-        double rbPower = gamepad1.right_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x;
-        double lbPower = -gamepad1.right_stick_x + gamepad1.right_stick_y - gamepad1.left_stick_x;
-        double rfPower = -gamepad1.right_stick_x + gamepad1.right_stick_y + gamepad1.left_stick_x;
-        if (gamepad1.left_stick_x == 0){
+        double lfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
+        double rbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
+        double lbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
+        double rfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
+        if (gamepad2.left_stick_x == 0){
             double gyroDiff = (getHeading() - lastAngle) % 360.0d;
             if (gyroDiff < 10) {
                 if (lfPower < 0) {
@@ -116,10 +124,12 @@ public class DriverControlled extends BaseOpMode {
             }
         }
 
-        motorDriveLeftFront.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, lfPower * powerLeftFront, power));
-        motorDriveRightBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, rbPower * powerRightBack, power));
-        motorDriveLeftBack.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, lbPower * powerLeftBack, power));
-        motorDriveRightFront.setPower(scalePower(gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, rfPower * powerRightFront, power));
+
+        motorDriveLeftFront.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, lfPower * powerLeftFront, power));
+        motorDriveRightBack.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, rbPower * powerRightBack, power));
+        motorDriveLeftBack.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, lbPower * powerLeftBack, power));
+        motorDriveRightFront.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, rfPower * powerRightFront, power));
+
 
         if (gamepad1.b) {
             motorLiftLeft.setPower(-1);
@@ -145,6 +155,13 @@ public class DriverControlled extends BaseOpMode {
         }
 
 
+        //General Form:
+        //If the button is pressed and the counter = 3, the servo changes position and the counter is set equal to 2
+        //When the button is let go and the counter = 2, the counter is set equal to 1
+        //If the button is pressed and the counter = 1, the servo changes to its original position and the counter is set equal to 0
+        //When the button is let go and the counter = 0, the counter is set equal to 3
+
+        //For releasing the sliders holding the conveyor belt
         if (gamepad1.start && servoStopCounter == 3.0){
             servoStopCounter = 2.0;
             servoStopLeft.setPosition(servoStopLeftPos1);
@@ -162,7 +179,7 @@ public class DriverControlled extends BaseOpMode {
             servoStopCounter = 3.0;
         }
 
-
+        //For lowering the arm to knock off the jewel
         if (gamepad1.back && servoJewelCounter == 3.0) {
             servoJewel.setPosition(servoJewelPos1);
             servoJewelCounter = 2.0;
@@ -178,6 +195,7 @@ public class DriverControlled extends BaseOpMode {
             servoJewelCounter = 3.0;
         }
 
+        //For extending or retracting the arm for relic
         if (gamepad1.left_bumper && servoRelicExtendCounter == 3.0) {
             servoRelicExtend.setPosition(servoRelicExtendPos1);
             servoRelicExtendCounter = 2.0;
@@ -193,6 +211,7 @@ public class DriverControlled extends BaseOpMode {
             servoRelicExtendCounter = 3.0;
         }
 
+        //For opening and closing the claw for the relic
         if (gamepad1.left_trigger > 0 && servoRelicCounter == 3.0) {
             servoRelic.setPosition(servoRelicPos1);
             servoRelicCounter = 2.0;
@@ -211,6 +230,7 @@ public class DriverControlled extends BaseOpMode {
 
 
         lastAngle = getHeading();
+
 
         if (gamepad1.right_bumper) {
             motorBeltLeft.setPower(1);
@@ -241,6 +261,8 @@ public class DriverControlled extends BaseOpMode {
      *  power: global power scale
      *
      */
+
+    //
     private double scalePower(double leftXStick, double xStick, double yStick, double val, double power) {
         double mag = Math.abs(xStick) + Math.abs(yStick) + Math.abs(leftXStick);
         if (mag == 0) {
@@ -251,6 +273,13 @@ public class DriverControlled extends BaseOpMode {
         }
         return power * (val / mag);
 
+    }
+
+    private double stickMax(double a, double b) {
+        if (Math.abs(a) > Math.abs(b)) {
+            return a;
+        }
+        return b;
     }
 
 

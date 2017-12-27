@@ -12,14 +12,20 @@ public class AutonomousBlue extends AutonomousOpMode {
     @Override
     public void init() {
         super.init();
-        commands.add(new MoveStraight(this, 2.0f, 0.5f));
-        commands.add(new GyroTurn(this, 180, 0.3));
-        commands.add(new MoveStraight(this, 2.0f, 0.5f));
+        commands.add(new GetPictograph(this));
+        commands.add(new MoveStraight(this, 0.8f, 0.3f));
+        commands.add(new MoveStraight(this, -1.1f, 0.7f));
+        commands.add(new GyroTurn(this, 0, 0.32));
+        commands.add(new MoveStraight(this, -1.5, .4f));
     }
 
     @Override
     public void loop() {
         super.loop();
+        if (this.data.containsKey("column")) {
+            telemetry.addData("column", getDataString("column"));
+            telemetry.addData("blue", getDataInt("blue"));
+        }
     }
 
 }

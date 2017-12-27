@@ -26,12 +26,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.Image;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -66,7 +68,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Concept: VuMark Id", group ="Concept")
-public class ConceptVuMarkIdentification extends LinearOpMode {
+@Disabled
+public class VuMarkTest extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
 
@@ -112,6 +115,8 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
+
+
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
          * in this data set: all three of the VuMarks in the game were created from this one template,
@@ -143,6 +148,11 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
                 telemetry.addData("VuMark", "%s visible", vuMark);
+
+                VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().poll();
+                Image image = frame.getImage(0);
+                image.getPixels().get(0);
+
 
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
