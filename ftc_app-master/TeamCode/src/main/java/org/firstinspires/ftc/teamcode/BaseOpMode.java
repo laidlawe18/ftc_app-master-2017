@@ -13,6 +13,7 @@ import java.util.Arrays;
  * Created by BHS-Lab on 11/17/2017.
  */
 
+//Makes this class an opmode
 public class BaseOpMode extends OpMode {
 
     //Creates variable names for all of the motors, servos, and sensors
@@ -33,7 +34,7 @@ public class BaseOpMode extends OpMode {
 
     GyroSensor gyroSensor;
 
-    //****Creates a variable for the gyrosensor's current
+    //Creates a variable for the gyro sensor's current heading/direction
     double gyroZero;
 
     //Gives variable names to the various servo positions we use for each servo in our code
@@ -62,11 +63,13 @@ public class BaseOpMode extends OpMode {
         motorLiftRight = hardwareMap.dcMotor.get("motor_lift_right");
         motorBeltLeft = hardwareMap.dcMotor.get("motor_belt_left");
         motorBeltRight = hardwareMap.dcMotor.get("motor_belt_right");
+
         servoStopLeft = hardwareMap.servo.get("servo_stop_left");
         servoStopRight = hardwareMap.servo.get("servo_stop_right");
         servoJewel = hardwareMap.servo.get ("servo_jewel");
         servoRelic = hardwareMap.servo.get("servo_relic");
         servoRelicExtend = hardwareMap.servo.get("servo_relic_extend");
+
         gyroSensor = hardwareMap.gyroSensor.get("sensor_gyro");
 
         //Gets the gyro sensor's current heading/direction
@@ -81,7 +84,7 @@ public class BaseOpMode extends OpMode {
     @Override
     public void loop() {
 
-        //
+        //Puts the current motor powers into an array for later use
         double[] motorPowers = {motorDriveLeftFront.getPower(), motorDriveRightFront.getPower(), motorDriveLeftBack.getPower(), motorDriveRightBack.getPower()};
 
         //Displays variable values on phone log, so we can track what's happening to them if needed
@@ -91,7 +94,7 @@ public class BaseOpMode extends OpMode {
 
     //The following methods are set up here so that they can be accessed in our autonomous program
 
-    //Sets the encoder mode for each of the wheel motors
+    //Sets the encoder mode for each of the drive motors
     public void setDriveMotorsMode(DcMotor.RunMode mode) {
         motorDriveLeftFront.setMode(mode);
         motorDriveRightFront.setMode(mode);
@@ -99,7 +102,7 @@ public class BaseOpMode extends OpMode {
         motorDriveRightBack.setMode(mode);
     }
 
-    //Tells all four wheels to drive forward until their encoders reach a certain position
+    //Tells all four wheels to drive until their encoders reach the same certain position
     public void setDriveMotorsPosition(int pos) {
         motorDriveLeftFront.setTargetPosition(pos);
         motorDriveRightFront.setTargetPosition(pos);
@@ -107,7 +110,7 @@ public class BaseOpMode extends OpMode {
         motorDriveRightBack.setTargetPosition(pos);
     }
 
-    //Sets the power on each wheel motor to the same certain value
+    //Sets the power on each drive motor to the same certain value
     public void setDriveMotorsPower(double power) {
         motorDriveLeftFront.setPower(power);
         motorDriveRightFront.setPower(power);
@@ -115,12 +118,12 @@ public class BaseOpMode extends OpMode {
         motorDriveRightBack.setPower(power);
     }
 
-    //****Returns which drive motors are still in the process of moving to their projected position
+    //Determines if any of the drive motors are still in the process of turning so that their encoders are in the correct position - if they are, it returns true
     public boolean driveMotorsBusy() {
         return (motorDriveLeftFront.isBusy() || motorDriveLeftBack.isBusy() || motorDriveRightFront.isBusy() || motorDriveRightBack.isBusy());
     }
 
-    //****Adds which motors are busy to an array
+    //Adds which drive motors are busy turning so that their encoders are in the correct positions to a string array
     public ArrayList<String> getDriveMotorsBusy() {
         ArrayList<String> out = new ArrayList<String>();
         if (motorDriveLeftFront.isBusy()) {
@@ -138,7 +141,7 @@ public class BaseOpMode extends OpMode {
         return out;
     }
 
-    //returns the current gyro heading
+    //Returns the current direction the robot is pointing in from the gyro sensor
     public double getHeading() {
         return (gyroSensor.getHeading() - gyroZero) % 360d;
     }

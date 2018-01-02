@@ -11,7 +11,11 @@ public class AutonomousBlue extends AutonomousOpMode {
 
     @Override
     public void init() {
+
+        //Calls the init() method from the superclass, BaseOpMode
         super.init();
+
+
         commands.add(new GetPictograph(this));
         commands.add(new MoveStraight(this, 0.8f, 0.3f));
         commands.add(new MoveStraight(this, -1.1f, 0.7f));

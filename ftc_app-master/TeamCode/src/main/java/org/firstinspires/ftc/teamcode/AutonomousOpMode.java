@@ -19,6 +19,8 @@ public class AutonomousOpMode extends BaseOpMode {
 
     @Override
     public void init() {
+
+        //Calls the init() method from the superclass, BaseOpMode
         super.init();
         data = new HashMap<String, Object>();
         commands = new LinkedList<AutoAction>();
