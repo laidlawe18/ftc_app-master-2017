@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.vuforia.Frame;
 import com.vuforia.Image;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -67,13 +68,17 @@ public class GetPictograph extends AutoAction {
             opmode.addData("column", vuMark.toString());
             done = true;
 
-            VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().poll();
+
+            /*VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
+            while (frame == null) {
+                frame = vuforia.getFrameQueue().poll();
+            }
             Image image = frame.getImage(0);
             Bitmap bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
             bm.copyPixelsFromBuffer(image.getPixels());
             int blue = Color.blue(bm.getPixel(50, 0));
 
-            opmode.addData("blue", blue);
+            opmode.addData("blue", blue);*/
 
 
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,

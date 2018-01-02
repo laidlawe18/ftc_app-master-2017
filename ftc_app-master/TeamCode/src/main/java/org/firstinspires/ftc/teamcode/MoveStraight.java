@@ -24,7 +24,7 @@ public class MoveStraight extends AutoAction {
     public MoveStraight(AutonomousOpMode opmode, double revs, double power) {
         super(opmode);
 
-        //Sets the
+        //Sets the variables in this class equal to constraints from the other class
         this.revs = revs;
         this.leftPower = power;
         this.rightPower = power;

@@ -13,6 +13,7 @@ import java.util.Queue;
 
 public class AutonomousOpMode extends BaseOpMode {
 
+    //
     Queue<AutoAction> commands;
     AutoAction currCommand;
     HashMap<String, Object> data;
@@ -28,13 +29,12 @@ public class AutonomousOpMode extends BaseOpMode {
 
     @Override
     public void loop() {
+        //Calls the loop() method from the superclass, BaseOpMode
         super.loop();
         if (commands.isEmpty() && currCommand == null) {
             stop();
             return;
         }
-
-
 
         //If the current command is null, it resets the current command to next command in the list and goes to the init method of the class that that command corresponds with
         if (currCommand == null) {
@@ -42,7 +42,7 @@ public class AutonomousOpMode extends BaseOpMode {
             currCommand.init();
         }
 
-
+        //Grabs the namee of the current command's class
         telemetry.addData("command", currCommand.getClass().getCanonicalName());
 
         //If the current command is done, it sends the program to the end method of that class, and then sets the current command to null - this will loop back to where the next command will be initialized if there is another command
