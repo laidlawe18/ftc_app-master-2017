@@ -11,18 +11,22 @@ import java.util.Queue;
  * Created by BHS-Lab on 11/17/2017.
  */
 
+//Makes this class a subclass of BaseOpMode
 public class AutonomousOpMode extends BaseOpMode {
 
-    //
+    //Creates a list or queue of commands which the autonomous will execute consecutively
     Queue<AutoAction> commands;
+
+    //****
     AutoAction currCommand;
     HashMap<String, Object> data;
 
     @Override
     public void init() {
-
         //Calls the init() method from the superclass, BaseOpMode
         super.init();
+
+        //****
         data = new HashMap<String, Object>();
         commands = new LinkedList<AutoAction>();
     }
@@ -31,6 +35,8 @@ public class AutonomousOpMode extends BaseOpMode {
     public void loop() {
         //Calls the loop() method from the superclass, BaseOpMode
         super.loop();
+
+        //Stops the loop if there are no more commands left
         if (commands.isEmpty() && currCommand == null) {
             stop();
             return;
@@ -54,6 +60,7 @@ public class AutonomousOpMode extends BaseOpMode {
         }
     }
 
+    //****
     public void addData(String id, Object obj) {
         this.data.put(id, obj);
     }

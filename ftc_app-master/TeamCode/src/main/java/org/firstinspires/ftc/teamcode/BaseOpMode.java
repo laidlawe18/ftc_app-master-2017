@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ public class BaseOpMode extends OpMode {
     Servo servoRelicExtend;
 
     GyroSensor gyroSensor;
+    LightSensor lightSensor;
 
     //Creates a variable for the gyro sensor's current heading/direction
     double gyroZero;
@@ -71,14 +73,16 @@ public class BaseOpMode extends OpMode {
         servoRelicExtend = hardwareMap.servo.get("servo_relic_extend");
 
         gyroSensor = hardwareMap.gyroSensor.get("sensor_gyro");
+        lightSensor = hardwareMap.lightSensor.get("sensor_light");
 
         //Gets the gyro sensor's current heading/direction
         gyroZero = gyroSensor.getHeading();
+        lightSensor.enableLed(true);
 
         //Reverses the directions of backwards motors (those on the right side)
         motorDriveRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         motorDriveRightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        motorBeltRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
@@ -146,4 +150,8 @@ public class BaseOpMode extends OpMode {
         return (gyroSensor.getHeading() - gyroZero) % 360d;
     }
 
+    //Returns the current value of light sensed by the light sensor
+    public double getLightVal() {
+        return lightSensor.getLightDetected();
+    }
 }

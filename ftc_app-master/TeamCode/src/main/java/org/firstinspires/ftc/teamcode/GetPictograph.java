@@ -42,7 +42,10 @@ public class GetPictograph extends AutoAction {
 
     @Override
     public void init() {
+
+        //Calls the init() method from the superclass, AutoAction
         super.init();
+
         cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
@@ -58,6 +61,8 @@ public class GetPictograph extends AutoAction {
 
     @Override
     public void update() {
+
+        //Calls the update() method from the superclass, AutoAction
         super.update();
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
@@ -107,7 +112,10 @@ public class GetPictograph extends AutoAction {
 
     @Override
     public void end() {
+        //Calls the end() method from the superclass, AutoAction
         super.end();
+
+        //Adds the column described by the pictograph to telemetry
         opmode.telemetry.addData("column", opmode.getDataString("column"));
         opmode.telemetry.addLine(opmode.getDataString("column"));
     }

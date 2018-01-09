@@ -14,13 +14,13 @@ import java.util.ArrayList;
  * Created by BHS-Lab on 10/13/2017.
  */
 
-//Sets up this file to be a teleop file
+//Makes this file a TeleOp
 @TeleOp(name="DriverControlled")
 
-//Allows us to easily control the robot inn the driving period - it's extends BaseOpMode, which means that this code will have access to the motors/servos/sensors defined in that class
+//Makes this class a subclass of BaseOpMode, which means that this code will have access to the motors/servos/sensors defined in that class
 public class DriverControlled extends BaseOpMode {
 
-    // Power multiplier for the drive motors
+    //Power multiplier for the drive motors
     double power = .5;
     double powerLeftFront = 1.0;
     double powerRightFront = 1.0;
@@ -30,23 +30,23 @@ public class DriverControlled extends BaseOpMode {
     //
     double lastAngle;
 
-    //Counter variables for the servos
+    //Sets up counter variables for the servos
     double servoStopCounter = 3.0;
     double servoJewelCounter = 3.0;
     double servoRelicCounter = 3.0;
     double servoRelicExtendCounter = 3.0;
 
-    //
+    //****wtl
     ArrayList<Double> lastFiveAngles;
 
     //Runs once when driver hits INIT, but before they hit PLAY
     @Override
     public void init() {
 
-        //Calls elements of the parent class
+        //Calls the init() method from the superclass, BaseOpMode
         super.init();
 
-        // Reset motor encoders and set to run using encoders
+        //Resets motor encoders and tells them to run without encoders
         setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMotorsMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -55,30 +55,37 @@ public class DriverControlled extends BaseOpMode {
     @Override
     public void loop() {
 
-        //Displays variable values on phone log, so we can track what's happening to them if needed
+        //Displays variable values in telemetry (the phone's log), so we can track what's happening to them if needed
         telemetry.addData("y", gamepad1.right_stick_y);
         telemetry.addData("x", gamepad1.right_stick_x);
         telemetry.addData("power", power);
         telemetry.addData("servoStopLeft position", servoStopLeft.getPosition());
         telemetry.addData("servoStopRight position", servoStopRight.getPosition());
 
-
+        //Sets up buttons y and a on gamepad 1 so that hitting y increases the power multiplier and hitting a decreases it
         if (gamepad1.y && power < 1) {
             power += .003;
         } else if (gamepad1.a && power > 0) {
             power -= .003;
         }
 
+        //Displays the value of the power multipliers of the drive motors
         telemetry.addData("left front power", powerLeftFront);
         telemetry.addData("left back power", powerLeftBack);
         telemetry.addData("right front power", powerRightFront);
         telemetry.addData("right back power", powerRightBack);
+
+        //****
         double lfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double rbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double lbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double rfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
+
+        //****
         if (gamepad2.left_stick_x == 0){
             double gyroDiff = (getHeading() - lastAngle) % 360.0d;
+
+            //****
             if (gyroDiff < 10) {
                 if (lfPower < 0) {
                     powerLeftFront *= Math.pow(1.01, gyroDiff);
@@ -155,7 +162,7 @@ public class DriverControlled extends BaseOpMode {
         }
 
 
-        //General Form:
+        //General form for the following 4 algorithms:
         //If the button is pressed and the counter = 3, the servo changes position and the counter is set equal to 2
         //When the button is let go and the counter = 2, the counter is set equal to 1
         //If the button is pressed and the counter = 1, the servo changes to its original position and the counter is set equal to 0
