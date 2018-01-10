@@ -16,13 +16,14 @@ public class MoveStraight extends AutoAction {
 
     //Creates a number of instance variables which will be used in this class
     double revs;
+    String revsName;
     boolean almostEnd;
     double almostEndTime;
     double startAngle;
     double leftPower;
     double rightPower;
 
-    //****Links this class to AutonomousOpMode
+    // Constructor for MoveStraight that takes revs as a double
     public MoveStraight(AutonomousOpMode opmode, double revs, double power) {
         super(opmode);
 
@@ -32,13 +33,27 @@ public class MoveStraight extends AutoAction {
         this.rightPower = power;
         almostEnd = false;
     }
+    
+    // Constructor for MoveStraight that takes revs as a String representing the variable name to obtain from the opmode on init()
+    public MoveStraight(AutonomousOpMode opmode, String revs, double power) {
+        super(opmode);
+        
+        this.revsName = revs;
+        this.power = power;
+        almostEnd = false;
+    }
 
     @Override
     public void init() {
 
         //Calls the init() method from the superclass, AutoAction
         super.init();
-
+        
+        // If this action was created with a variable name for revs, use it to get the variable from opmode now
+        if (revsName != null) {
+            revs = opmode.getDataDouble(revsName);
+        }
+        
         //Resets the encoders and has them run to the position determined by revs
         opmode.setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.setDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);

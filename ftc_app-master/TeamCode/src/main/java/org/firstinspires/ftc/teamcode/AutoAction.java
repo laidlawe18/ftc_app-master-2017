@@ -7,14 +7,8 @@ package org.firstinspires.ftc.teamcode;
 //Sets up a number of methods that will be used by several daughter classes
 public class AutoAction {
 
-    //****
+    //Used to tell the robot when to stop
     public boolean done;
-
-    //Creates an instance of AutonomousOpMode in every subclass of AutoAction
-    public AutonomousOpMode opmode;
-    public AutoAction(AutonomousOpMode opmode) {
-        this.opmode = opmode;
-    }
 
     //Runs once when command line brings autonomous to this class
     public void init() {
@@ -31,7 +25,7 @@ public class AutoAction {
 
     }
 
-    //****
+    //Used to tell the robot that it's done
     public boolean isDone() {
         return done;
     }

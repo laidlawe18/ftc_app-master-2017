@@ -28,9 +28,11 @@ public class AutonomousBlue extends AutonomousOpMode {
         commands.add(new GyroTurn(this, 270, .32));
         commands.add(new MoveStraight(this, -1.7, .7f));
         commands.add(new GyroTurn(this, 180, .32));
-        commands.add(new MoveForRelic(this, -.4, -1.0, -1.6, .5f));
+        commands.add(new GetPositionWithLines(this, 0.5f);
+        commands.add(new MoveStraight(this, "horizontalDisplacement", 0.7f);
+        commands.add(new MoveForRelic(this, -0.4, 0, -0.4, .7f));
         commands.add(new GyroTurn(this, 270, .32));
-        commands.add(new MoveStraight(this, -.4, .5));
+        commands.add(new MoveStraight(this, "depth", 0.5f));
     }
 
     @Override
