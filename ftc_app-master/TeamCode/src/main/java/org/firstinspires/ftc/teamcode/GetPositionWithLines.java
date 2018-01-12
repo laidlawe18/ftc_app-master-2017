@@ -49,7 +49,7 @@ public class GetPositionWithLines extends AutoAction {
         //Set the drive motors to run for .2 revolutions
         opmode.setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.setDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
-        opmode.setDriveMotorsPosition((int) (-.25 * MoveStraight.REVS_MULTIPLIER));
+        opmode.setDriveMotorsPosition((int) (Math.abs(power) / power * .25 * MoveStraight.REVS_MULTIPLIER));
         opmode.setDriveMotorsPower(power);
         
         //Initiate variables for state and calibration
@@ -117,6 +117,6 @@ public class GetPositionWithLines extends AutoAction {
         
         //Adds depth and horizontalDisplacement as variables to the opmode
         opmode.addData("depth", -depth / (WHEEL_DIAMETER * Math.PI) + 0.3);
-        opmode.addData("horizontalDisplacement", horizontalDisplacement / (WHEEL_DIAMETER * Math.PI));
+        opmode.addData("horizontalDisplacement", Math.abs(power) / -power * horizontalDisplacement / (WHEEL_DIAMETER * Math.PI));
     }
 }
