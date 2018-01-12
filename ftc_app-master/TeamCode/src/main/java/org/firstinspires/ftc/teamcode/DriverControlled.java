@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by BHS-Lab on 10/13/2017.
  */
 
-//Makes this file a TeleOp
+//Makes this file a TeleOp which is visible in the FTC Driver Station app
 @TeleOp(name="DriverControlled")
 
 //Makes this class a subclass of BaseOpMode, which means that this code will have access to the motors/servos/sensors defined in that class
@@ -27,7 +27,7 @@ public class DriverControlled extends BaseOpMode {
     double powerLeftBack = 1.0;
     double powerRightBack = 1.0;
 
-    //
+    //****
     double lastAngle;
 
     //Sets up counter variables for the servos

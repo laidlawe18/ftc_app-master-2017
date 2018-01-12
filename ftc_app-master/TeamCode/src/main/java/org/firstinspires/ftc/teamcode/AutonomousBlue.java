@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Created by BHS-Lab on 11/20/2017.
  */
 
-//Makes this class an autonomous program
+//Makes this class an autonomous program which is visible in the FTC Driver Station app
 @Autonomous(name="AutonomousBlue")
 
 //Makes this class a subclass of AutonomousOpMode

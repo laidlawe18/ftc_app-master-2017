@@ -39,7 +39,7 @@ public class BaseOpMode extends OpMode {
     //Creates a variable for the gyro sensor's current heading/direction
     double gyroZero;
 
-    //Gives variable names to the various servo positions we use for each servo in our code
+    //Gives variable names to the various servo positions we use for each servo in our code - these can not be changed
     public static final double servoStopLeftPos1 = 0.43;
     public static final double servoStopLeftPos2 = 0.53;
     public static final double servoStopRightPos1 = 0.48;
@@ -53,6 +53,7 @@ public class BaseOpMode extends OpMode {
 
     public static final double servoRelicExtendPos1 = 0.1;
     public static final double servoRelicExtendPos2 = 0.85;
+
 
     @Override
     public void init() {
