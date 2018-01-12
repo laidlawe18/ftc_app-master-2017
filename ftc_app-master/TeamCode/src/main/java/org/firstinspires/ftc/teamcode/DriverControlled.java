@@ -36,9 +36,6 @@ public class DriverControlled extends BaseOpMode {
     double servoRelicCounter = 3.0;
     double servoRelicExtendCounter = 3.0;
 
-    //****wtl
-    ArrayList<Double> lastFiveAngles;
-
     //Runs once when driver hits INIT, but before they hit PLAY
     @Override
     public void init() {
@@ -63,10 +60,10 @@ public class DriverControlled extends BaseOpMode {
         telemetry.addData("servoStopRight position", servoStopRight.getPosition());
 
         //Sets up buttons y and a on gamepad 1 so that hitting y increases the power multiplier and hitting a decreases it
-        if (gamepad1.y && power < 1) {
-            power += .003;
+            if (gamepad1.y && power < 1) {
+            power += .001;
         } else if (gamepad1.a && power > 0) {
-            power -= .003;
+            power -= .001;
         }
 
         //Displays the value of the power multipliers of the drive motors
@@ -75,7 +72,7 @@ public class DriverControlled extends BaseOpMode {
         telemetry.addData("right front power", powerRightFront);
         telemetry.addData("right back power", powerRightBack);
 
-        //****
+        //
         double lfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double rbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double lbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
@@ -240,11 +237,11 @@ public class DriverControlled extends BaseOpMode {
 
 
         if (gamepad1.right_bumper) {
-            motorBeltLeft.setPower(1);
-            motorBeltRight.setPower(1);
-        } else if (gamepad1.right_trigger > 0) {
             motorBeltLeft.setPower(-1);
             motorBeltRight.setPower(-1);
+        } else if (gamepad1.right_trigger > 0) {
+            motorBeltLeft.setPower(1);
+            motorBeltRight.setPower(1);
         } else {
             motorBeltLeft.setPower(0);
             motorBeltRight.setPower(0);

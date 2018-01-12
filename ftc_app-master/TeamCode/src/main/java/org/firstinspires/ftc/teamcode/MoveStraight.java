@@ -39,7 +39,8 @@ public class MoveStraight extends AutoAction {
         super(opmode);
         
         this.revsName = revs;
-        this.power = power;
+        this.leftPower = power;
+        this.rightPower = power;
         almostEnd = false;
     }
 

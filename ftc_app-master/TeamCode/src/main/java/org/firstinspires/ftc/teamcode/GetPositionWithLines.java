@@ -48,8 +48,8 @@ public class GetPositionWithLines extends AutoAction {
         // Set the drive motors to run for .2 revolutions
         opmode.setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.setDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
-        opmode.setDriveMotorsPosition((int) (.2 * MoveStraight.REVS_MULTIPLIER));
-        opmode.setDriveMotorsPower(power)
+        opmode.setDriveMotorsPosition((int) (-.25 * MoveStraight.REVS_MULTIPLIER));
+        opmode.setDriveMotorsPower(power);
         
         // initiate variables for state and calibration
         state = 1;
@@ -59,6 +59,7 @@ public class GetPositionWithLines extends AutoAction {
 
     @Override
     public void update() {
+        opmode.telemetry.addData("pellow1", blackVal);
         // do different things based on state variable
         if (state == 1) {
             // catch when the first drive motor stops being busy and start a one second countdown for the motors to stop
@@ -80,15 +81,15 @@ public class GetPositionWithLines extends AutoAction {
                 blackVal = (blackVal * readings + opmode.getLightVal()) / (readings + 1);
             }
         }
-        if (state == 2) {
+        else if (state == 2) {
             // if the light sensor value is greater by at least .05 than the black value, record the encoder position as the first line
-            if (opmode.getLightVal() > blackVal + 0.05) {
+            if (opmode.getLightVal() < blackVal - 0.02) {
                 firstLine = opmode.motorDriveLeftFront.getCurrentPosition();
                 state = 3;
             }
-        // same thing for second line, but it also must be at least a tenth of a revolution beyond the first line to ensure the robot isn't still seeing the first line
-        } if (state == 3) {
-            if (opmode.getLightVal() > blackVal + 0.05 && Math.abs(opmode.motorDriveLeftFront.getCurrentPosition()) > Math.abs(firstLine) + MoveStraight.REVS_MULTIPLIER / 10) {
+        // same thing for second line, but it also must be at least a twentieth of a revolution beyond the first line to ensure the robot isn't still seeing the first line
+        }  else if (state == 3) {
+            if (opmode.getLightVal() < blackVal - 0.02 && Math.abs(opmode.motorDriveLeftFront.getCurrentPosition()) > Math.abs(firstLine) + MoveStraight.REVS_MULTIPLIER / 5) {
                 secondLine = opmode.motorDriveLeftFront.getCurrentPosition();
                 done = true;
             }
@@ -106,7 +107,7 @@ public class GetPositionWithLines extends AutoAction {
         
         //Uses the encoder positions from when it crossed the first and second line of the Cryptobox Zone
         //to calculate the distance in inches between the lines
-        double dist = ((double) (secondLine - firstLine)) / MoveStraight.REVS_MULTIPLIER * WHEEL_DIAMETER * Math.PI;
+        double dist = ((double) (Math.abs(secondLine) - Math.abs(firstLine))) / MoveStraight.REVS_MULTIPLIER * WHEEL_DIAMETER * Math.PI;
         
         //Uses that distance to calculate the depth (distance from the wall) and horizontal displacement of the robot
         //from the center of the cryptobox
@@ -114,7 +115,7 @@ public class GetPositionWithLines extends AutoAction {
         double horizontalDisplacement = dist / 2;
         
         // Adds depth and horizontalDisplacement as variables to the opmode
-        opmode.addData("depth", depth / (WHEEL_DIAMETER * Math.PI) - 0.2);
+        opmode.addData("depth", -depth / (WHEEL_DIAMETER * Math.PI) + 0.3);
         opmode.addData("horizontalDisplacement", horizontalDisplacement / (WHEEL_DIAMETER * Math.PI));
     }
 }

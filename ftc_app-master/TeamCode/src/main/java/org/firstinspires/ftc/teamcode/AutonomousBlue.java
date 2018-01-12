@@ -24,15 +24,16 @@ public class AutonomousBlue extends AutonomousOpMode {
         //commands.add(new MoveStraight(this, 0.8f, 0.3f));
         //commands.add(new MoveStraight(this, -1.1f, 0.7f));
         //commands.add(new GyroTurn(this, 0, 0.32));
-        commands.add(new MoveStraight(this, -2.5, .5f));
-        commands.add(new GyroTurn(this, 270, .32));
-        commands.add(new MoveStraight(this, -1.7, .7f));
-        commands.add(new GyroTurn(this, 180, .32));
-        commands.add(new GetPositionWithLines(this, 0.5f);
-        commands.add(new MoveStraight(this, "horizontalDisplacement", 0.7f);
-        commands.add(new MoveForRelic(this, -0.4, 0, -0.4, .7f));
-        commands.add(new GyroTurn(this, 270, .32));
-        commands.add(new MoveStraight(this, "depth", 0.5f));
+        commands.add(new MoveStraight(this, -2.2, 1.2f));
+        commands.add(new GyroTurn(this, 295, .3));
+        commands.add(new MoveStraight(this, -2.3, 1.5f));
+        commands.add(new GyroTurn(this, 182, .3));
+        commands.add(new GetPositionWithLines(this, -0.08f));
+        commands.add(new MoveStraight(this, "horizontalDisplacement", -0.8f));
+        commands.add(new MoveForRelic(this, -0.4f, -.95f, -1.5f, 1.2f));
+        commands.add(new GyroTurn(this, 270, .3));
+        commands.add(new MoveStraight(this, "depth", 1f));
+        commands.add(new Belts(this, .7));
     }
 
     @Override

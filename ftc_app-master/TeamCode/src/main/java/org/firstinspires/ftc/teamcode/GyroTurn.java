@@ -77,8 +77,8 @@ public class GyroTurn extends AutoAction {
         double angleDiff = Math.min((desiredHeading - opmode.getHeading() + 360) % 360, (opmode.getHeading() - desiredHeading + 360) % 360);
         opmode.telemetry.addData("Last angle", angleDiff);
         if (angleDiff < 30) {
-            leftPower = ((Math.max(angleDiff - 10, 0) / 30) * leftPower + leftPower * .33) * powerMult;
-            rightPower = ((Math.max(angleDiff - 10, 0) / 30) * rightPower + rightPower * .33) * powerMult;
+            leftPower = ((Math.max(angleDiff - 15, 0) / 45) * leftPower + leftPower * .33) * powerMult;
+            rightPower = ((Math.max(angleDiff - 15, 0) / 45) * rightPower + rightPower * .33) * powerMult;
         }
 
         //Changes which drive motors have + and - values depending on where the robot wants to turn to relative to it's current position in order to choose the most efficient path.

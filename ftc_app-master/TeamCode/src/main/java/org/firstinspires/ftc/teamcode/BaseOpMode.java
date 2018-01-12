@@ -94,6 +94,7 @@ public class BaseOpMode extends OpMode {
         //Displays variable values on phone log, so we can track what's happening to them if needed
         telemetry.addData("Motor powers", Arrays.toString(motorPowers));
         telemetry.addData("Angle", getHeading());
+        telemetry.addData("Pellow", lightSensor.getLightDetected());
     }
 
     //The following methods are set up here so that they can be accessed in our autonomous program
