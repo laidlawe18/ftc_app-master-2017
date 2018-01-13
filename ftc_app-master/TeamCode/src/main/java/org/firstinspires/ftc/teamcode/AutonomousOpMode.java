@@ -26,7 +26,7 @@ public class AutonomousOpMode extends BaseOpMode {
         //Calls the init() method from the superclass, BaseOpMode
         super.init();
 
-        //****
+        //****Helps set up the list of commmands
         data = new HashMap<String, Object>();
         commands = new LinkedList<AutoAction>();
     }

@@ -14,6 +14,8 @@ public class GetPositionWithLines extends AutoAction {
     
     //Drive motor power
     double power;
+
+    double startTime;
     
     //Variable for what state the action is in:
     //1: moving forward to calibrate the light sensor to the black tiles
@@ -24,11 +26,7 @@ public class GetPositionWithLines extends AutoAction {
     //variables for the calibration of the light sensor; number of readings taken and current average value for the black tiles
     int readings;
     double blackVal;
-    
-    //variables for ending the program even if one motor gets stuck and is still busy
-    boolean almostEnd;
-    double almostEndTime;
-    
+
     //Encoder values to be set for the first and second lines of the Cryptobox Zone
     int firstLine;
     int secondLine;
@@ -45,12 +43,9 @@ public class GetPositionWithLines extends AutoAction {
     public void init() {
         //Call AutoAction init()
         super.init();
-        
-        //Set the drive motors to run for .2 revolutions
-        opmode.setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opmode.setDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
-        opmode.setDriveMotorsPosition((int) (-.25 * MoveStraight.REVS_MULTIPLIER));
-        opmode.setDriveMotorsPower(power);
+
+        // Set startTime to the current time in seconds
+        startTime = System.nanoTime() / 1000000000.0d;
         
         //Initiate variables for state and calibration
         state = 1;
@@ -63,19 +58,10 @@ public class GetPositionWithLines extends AutoAction {
         opmode.telemetry.addData("pellow1", blackVal);
         //Do different things based on state variable
         if (state == 1) {
-            //Catch when the first drive motor stops being busy and start a one second countdown for the motors to stop
-            if (opmode.getDriveMotorsBusy().size() < 4 && !almostEnd) {
-                almostEnd = true;
-                almostEndTime = System.nanoTime() / 1000000000;
-            }
-    
-            //Tells the program it's done moving straight if more than a second has passed since almostEnd was
-            //Set to true - this is meant to prevent the robot from getting stuck in an infinite loop if one wheel gets stuck
-            if (almostEnd && System.nanoTime() / 1000000000 - almostEndTime > 1 || !opmode.driveMotorsBusy()) {
+
+            // If it's been more 2 seconds since the program started
+            if (System.nanoTime() / 1000000000.0d - startTime > 2) {
                 state = 2;
-                opmode.setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                opmode.setDriveMotorsMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                //Keeps the motors moving so that they move towards the first line of the Cryptobox Zone
                 opmode.setDriveMotorsPower(power);
             } else {
                 //Averages the current light sensor reading into the black value
@@ -116,7 +102,7 @@ public class GetPositionWithLines extends AutoAction {
         double horizontalDisplacement = dist / 2;
         
         //Adds depth and horizontalDisplacement as variables to the opmode
-        opmode.addData("depth", -depth / (WHEEL_DIAMETER * Math.PI) + 0.3);
-        opmode.addData("horizontalDisplacement", horizontalDisplacement / (WHEEL_DIAMETER * Math.PI));
+        opmode.addData("depth", -depth / (WHEEL_DIAMETER * Math.PI));
+        opmode.addData("horizontalDisplacement", Math.abs(power) / -power * horizontalDisplacement / (WHEEL_DIAMETER * Math.PI));
     }
 }

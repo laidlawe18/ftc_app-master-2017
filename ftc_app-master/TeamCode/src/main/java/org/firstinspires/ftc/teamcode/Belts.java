@@ -26,6 +26,8 @@ public class Belts extends AutoAction {
     @Override
     public void update() {
         super.update();
+        opmode.motorBeltLeft.setPower(1);
+        opmode.motorBeltRight.setPower(1);
         if (System.nanoTime() / 1000000000.0 > startTime + 1) {
             done = true;
         }
