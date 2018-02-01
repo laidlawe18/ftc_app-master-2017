@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ public class BaseOpMode extends OpMode {
 
     GyroSensor gyroSensor;
     LightSensor lightSensor;
+    ColorSensor colorSensor;
 
     //Creates a variable for the gyro sensor's current heading/direction
     double gyroZero;
@@ -45,11 +47,11 @@ public class BaseOpMode extends OpMode {
     public static final double servoStopRightPos1 = 0.48;
     public static final double servoStopRightPos2 = 0.3;
 
-    public static final double servoJewelPos1 = 0.5;
-    public static final double servoJewelPos2 = 1.0;
+    public static final double servoJewelPos1 = 0.7;
+    public static final double servoJewelPos2 = 0.02;
 
     public static final double servoRelicPos1 = 0.5;
-    public static final double servoRelicPos2 = 0.8;
+    public static final double servoRelicPos2 = 0.75;
 
     public static final double servoRelicExtendPos1 = 0.1;
     public static final double servoRelicExtendPos2 = 0.85;
@@ -75,10 +77,12 @@ public class BaseOpMode extends OpMode {
 
         gyroSensor = hardwareMap.gyroSensor.get("sensor_gyro");
         lightSensor = hardwareMap.lightSensor.get("sensor_light");
+        colorSensor = hardwareMap.colorSensor.get("sensor_color");
 
-        //Gets the gyro sensor's current heading/direction
+        //Gets the gyro sensor's current heading/direction and turns the light/color sensors' LEDs on
         gyroZero = gyroSensor.getHeading();
         lightSensor.enableLed(true);
+        colorSensor.enableLed(true);
 
         //Reverses the directions of backwards motors (those on the right side)
         motorDriveRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -106,6 +110,14 @@ public class BaseOpMode extends OpMode {
         motorDriveRightFront.setMode(mode);
         motorDriveLeftBack.setMode(mode);
         motorDriveRightBack.setMode(mode);
+    }
+
+    //Sets the encoder mode for each of the drive motors
+    public void setDriveMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
+        motorDriveLeftFront.setZeroPowerBehavior(behavior);
+        motorDriveRightFront.setZeroPowerBehavior(behavior);
+        motorDriveLeftBack.setZeroPowerBehavior(behavior);
+        motorDriveRightBack.setZeroPowerBehavior(behavior);
     }
 
     //Tells all four wheels to drive until their encoders reach the same certain position

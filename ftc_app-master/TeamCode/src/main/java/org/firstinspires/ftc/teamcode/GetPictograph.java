@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+//This imports all of the methods we need to run the program
 import android.graphics.Bitmap;
 import android.graphics.Color;
-
 import com.vuforia.Frame;
 import com.vuforia.Image;
 
@@ -26,6 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 public class GetPictograph extends AutoAction {
 
+    //Sets up variables used by Vuforia
     public static final String TAG = "Vuforia VuMark Sample";
 
     OpenGLMatrix lastLocation = null;
@@ -36,9 +37,8 @@ public class GetPictograph extends AutoAction {
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
 
-    public GetPictograph(AutonomousOpMode opmode) {
-        super(opmode);
-    }
+    //The following constructor is called when an instance of this class is created (aka in AutonomousRed or in AutonomousBlue) - it then calls the AutoAction constructor
+    public GetPictograph(AutonomousOpMode opmode) { super(opmode); }
 
     @Override
     public void init() {
@@ -46,11 +46,14 @@ public class GetPictograph extends AutoAction {
         //Calls the init() method from the superclass, AutoAction
         super.init();
 
+        //Starts setting up the camera by grabbing its ID
         cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
+        //Gives us the key to use Vuforia
         parameters.vuforiaLicenseKey = "AddnqqH/////AAAAGdrqb6+wvkw5hrGHA820+J8s0XGluTdYT3eBOwLCrMn4bf8Dby7ZiyLSnO1ZL9Ex4ajoGGtxXdYep/o/kBCloKZKs6inGDjnFbCfi2lJKayJR3B06HPphlLod6F61sQVIg3RHEZc4B1QWAfw4yTSgRc8yZ113XLSVtZ4u+qPPbf1fiWQsEsBu0SbHg6fBHbhS3kc3JVbtXSxPF+NajL8vYEkgDEjmlpGrNwYFzW0P2T0akWx/DLknoJte64/U3JeDF+9zq/n6nWPJAKe+SIINz4DHwr5M7v5aylqh0CCvUHgvGbCuVZxTukoVTMF+IhiYNbVy5rlvBaW/e5TwNYbfPiWvT0b3xA9fDj259Qgreci";
 
+        //Fully sets up the camera and Vuforia's system of being able to track the pictograph
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
@@ -70,6 +73,7 @@ public class GetPictograph extends AutoAction {
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
+            //Adds what column Vuforia has deduced from the pictograph to telemetry and ends the program
             opmode.addData("column", vuMark.toString());
             done = true;
 
@@ -93,16 +97,17 @@ public class GetPictograph extends AutoAction {
 
                 /* We further illustrate how to decompose the pose into useful rotational and
                  * translational components */
-            if (pose != null) {
+            //Changing the orientation of the image helps the program if it can't currently decode the pictograph
+                if (pose != null) {
                 VectorF trans = pose.getTranslation();
                 Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
 
-                // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                //Extract the X, Y, and Z components of the offset of the target relative to the robot
                 double tX = trans.get(0);
                 double tY = trans.get(1);
                 double tZ = trans.get(2);
 
-                // Extract the rotational components of the target relative to the robot
+                //Extract the rotational components of the target relative to the robot
                 double rX = rot.firstAngle;
                 double rY = rot.secondAngle;
                 double rZ = rot.thirdAngle;

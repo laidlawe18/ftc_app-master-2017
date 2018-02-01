@@ -27,7 +27,7 @@ public class DriverControlled extends BaseOpMode {
     double powerLeftBack = 1.0;
     double powerRightBack = 1.0;
 
-    //****
+    //Sets up what will be the current heading of the robot
     double lastAngle;
 
     //Sets up counter variables for the servos
@@ -60,9 +60,9 @@ public class DriverControlled extends BaseOpMode {
         telemetry.addData("servoStopRight position", servoStopRight.getPosition());
 
         //Sets up buttons y and a on gamepad 1 so that hitting y increases the power multiplier and hitting a decreases it
-            if (gamepad1.y && power < 1) {
+            if ((gamepad2.y || gamepad1.y) && power < 1) {
             power += .001;
-        } else if (gamepad1.a && power > 0) {
+        } else if ((gamepad1.a || gamepad2.a) && power > 0) {
             power -= .001;
         }
 
@@ -72,17 +72,17 @@ public class DriverControlled extends BaseOpMode {
         telemetry.addData("right front power", powerRightFront);
         telemetry.addData("right back power", powerRightBack);
 
-        //
+        //Determines what the speed of each wheel should be based off of the joystick values and which one is greater (for the method stickMax, see below)
         double lfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double rbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) + stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double lbPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) - 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
         double rfPower = stickMax(gamepad1.right_stick_y, gamepad2.right_stick_y) - stickMax(gamepad1.right_stick_x, gamepad2.right_stick_x) + 1.3 * stickMax(gamepad1.left_stick_x, gamepad2.left_stick_x);
 
-        //****
+        //Sets gyroDiff to the difference between the last recorded heading and the current heading if the left stick of gamepad 2 isn't moving along the x-axis
         if (gamepad2.left_stick_x == 0){
             double gyroDiff = (getHeading() - lastAngle) % 360.0d;
 
-            //****
+            //Sets up a system that slows down or speeds up the turning speed of the motors depending on gyroDiffwhether their current powers aare negative or positive
             if (gyroDiff < 10) {
                 if (lfPower < 0) {
                     powerLeftFront *= Math.pow(1.01, gyroDiff);
@@ -104,7 +104,9 @@ public class DriverControlled extends BaseOpMode {
                 } else if (rbPower > 0) {
                     powerRightBack *= Math.pow(1.01, gyroDiff);
                 }
-            } else if (gyroDiff > 350) {
+            }
+            //Does the opposite if the the difference is greater than 350 degrees
+            else if (gyroDiff > 350) {
                 if (lfPower < 0) {
                     powerLeftFront *= Math.pow(.99, 360 - gyroDiff);
                 } else if (lfPower > 0) {
@@ -128,13 +130,15 @@ public class DriverControlled extends BaseOpMode {
             }
         }
 
+        //Sets the power of the drive motors depending on the output of the method scalePower (found below) based on the given parameters
+        if (!gamepad2.left_bumper && !gamepad2.right_bumper) {
+            motorDriveLeftFront.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, lfPower * powerLeftFront, power) * (gamepad2.left_trigger > 0 ? 2.5 : (gamepad2.right_trigger > 0 ? .5 : 1)));
+            motorDriveRightBack.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, rbPower * powerRightBack, power) * (gamepad2.left_trigger > 0 ? 2.5 : (gamepad2.right_trigger > 0 ? .5 : 1)));
+            motorDriveLeftBack.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, lbPower * powerLeftBack, power) * (gamepad2.left_trigger > 0 ? 2.5 : (gamepad2.right_trigger > 0 ? .5 : 1)));
+            motorDriveRightFront.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, rfPower * powerRightFront, power) * (gamepad2.left_trigger > 0 ? 2.5 : (gamepad2.right_trigger > 0 ? .5 : 1)));
+        }
 
-        motorDriveLeftFront.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, lfPower * powerLeftFront, power));
-        motorDriveRightBack.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, rbPower * powerRightBack, power));
-        motorDriveLeftBack.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, lbPower * powerLeftBack, power));
-        motorDriveRightFront.setPower(scalePower(gamepad2.left_stick_x, gamepad2.right_stick_x, gamepad2.right_stick_y, rfPower * powerRightFront, power));
-
-
+        //Allows us to control the direction of the motors that lift the arm together with b (down) and x (up) or control them individually with the left motor controlled by left and right on the d-pad
         if (gamepad1.b) {
             motorLiftLeft.setPower(-1);
             motorLiftRight.setPower(-1);
@@ -231,11 +235,11 @@ public class DriverControlled extends BaseOpMode {
             servoRelicCounter = 3.0;
         }
 
-
-
+        //Sets lastAngle equal to the current heading
         lastAngle = getHeading();
 
 
+        //Using the belts, the robot sucks in the glyph is the bumper is pressed, spits them out if the trigger is pressed, and does nothing if neither is touched
         if (gamepad1.right_bumper) {
             motorBeltLeft.setPower(-1);
             motorBeltRight.setPower(-1);
@@ -246,6 +250,19 @@ public class DriverControlled extends BaseOpMode {
             motorBeltLeft.setPower(0);
             motorBeltRight.setPower(0);
         }
+
+        if (gamepad2.left_bumper) {
+            motorDriveLeftFront.setPower(-power * 1.5);
+            motorDriveLeftBack.setPower(power * .66);
+            motorDriveRightFront.setPower(power * 1.5);
+            motorDriveRightBack.setPower(-power * .66);
+        } else if (gamepad2.right_bumper){
+            motorDriveLeftFront.setPower(power * 1.5);
+            motorDriveLeftBack.setPower(-power * .66);
+            motorDriveRightFront.setPower(-power * 1.5);
+            motorDriveRightBack.setPower(power * .66);
+        }
+
         /*
         * Debugging code for checking which motor and what direction is being influenced by each control
         motorDriveLeftFront.setPower(gamepad1.left_stick_y);
@@ -257,16 +274,14 @@ public class DriverControlled extends BaseOpMode {
     
     
     /**
-     * Input: 
+     *  Input:
      *  leftXStick: left joystick x component
      *  xStick: right joystick x component
      *  yStick: right joystick y component
      *  val: unscaled power value for the motor
-     *  power: global power scale
-     *
-     */
+     *  power: global power scale */
 
-    //
+    //Sets up a method used above to determine the power of each drive motor
     private double scalePower(double leftXStick, double xStick, double yStick, double val, double power) {
         double mag = Math.abs(xStick) + Math.abs(yStick) + Math.abs(leftXStick);
         if (mag == 0) {
@@ -276,16 +291,14 @@ public class DriverControlled extends BaseOpMode {
             return val * power;
         }
         return power * (val / mag);
-
     }
 
+    //Sets up a method which returns the larger of two stick values
     private double stickMax(double a, double b) {
         if (Math.abs(a) > Math.abs(b)) {
             return a;
         }
         return b;
     }
-
-
 }
 

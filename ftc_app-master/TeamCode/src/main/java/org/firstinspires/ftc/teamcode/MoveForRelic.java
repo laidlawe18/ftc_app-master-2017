@@ -12,11 +12,13 @@ public class MoveForRelic extends MoveStraight {
     double c;
     double r;
 
-    //Links this class to AutonomousOpMode
+    //This constructor is called when an instance of this class is created (aka in AutonomousRed or in AutonomousBlue)
     public MoveForRelic(AutonomousOpMode opmode, double l, double c, double r, double power) {
+
+        //Calls AutoAction constructor
         super(opmode, 0, power);
 
-        //Sets the variables in this class equal to constraints from the other class
+        //Sets the variables in this class equal to constraints in the autonomous command
         this.l = l;
         this.c = c;
         this.r = r;

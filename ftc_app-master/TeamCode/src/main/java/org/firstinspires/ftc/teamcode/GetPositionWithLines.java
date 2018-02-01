@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+//This imports the method we need to run the program
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
@@ -12,10 +13,10 @@ public class GetPositionWithLines extends AutoAction {
     //Constant for the diameter of the wheels in inches
     public static final double WHEEL_DIAMETER = 4.0;
     
-    //Drive motor power
+    //Variables for the drive motor power and a specific time
     double power;
-
     double startTime;
+    boolean above;
     
     //Variable for what state the action is in:
     //1: moving forward to calibrate the light sensor to the black tiles
@@ -23,7 +24,7 @@ public class GetPositionWithLines extends AutoAction {
     //3: moving forward till second line
     int state;
     
-    //variables for the calibration of the light sensor; number of readings taken and current average value for the black tiles
+    //Variables for the calibration of the light sensor; number of readings taken and current average value for the black tiles
     int readings;
     double blackVal;
 
@@ -31,12 +32,15 @@ public class GetPositionWithLines extends AutoAction {
     int firstLine;
     int secondLine;
 
-    public GetPositionWithLines(AutonomousOpMode opmode, double power) {
-        //Call AutoAction constructor
+    //This constructor is called when an instance of this class is created (aka in AutonomousRed or in AutonomousBlue)
+    public GetPositionWithLines(AutonomousOpMode opmode, double power, boolean above) {
+
+        //Calls AutoAction constructor
         super(opmode);
         
         //Set power property
         this.power = power;
+        this.above = above;
     }
 
     @Override
@@ -47,20 +51,24 @@ public class GetPositionWithLines extends AutoAction {
         // Set startTime to the current time in seconds
         startTime = System.nanoTime() / 1000000000.0d;
         
+        //Set the drive motors to run for .2 revolutions
+        
         //Initiate variables for state and calibration
         state = 1;
         readings = 0;
         blackVal = 0;
+
+        opmode.setDriveMotorsMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
     public void update() {
         opmode.telemetry.addData("pellow1", blackVal);
-        //Do different things based on state variable
+        //Does different things based on state variable
         if (state == 1) {
 
             // If it's been more 2 seconds since the program started
-            if (System.nanoTime() / 1000000000.0d - startTime > 2) {
+            if (System.nanoTime() / 1000000000.0d - startTime > 1.2) {
                 state = 2;
                 opmode.setDriveMotorsPower(power);
             } else {
@@ -70,13 +78,14 @@ public class GetPositionWithLines extends AutoAction {
         }
         else if (state == 2) {
             //If the light sensor value is greater by at least .05 than the black value, record the encoder position as the first line
-            if (opmode.getLightVal() < blackVal - 0.02) {
+            if ((!above && opmode.getLightVal() < blackVal - 0.02) || (above && opmode.getLightVal() > blackVal + 0.08)) {
                 firstLine = opmode.motorDriveLeftFront.getCurrentPosition();
                 state = 3;
+                opmode.setDriveMotorsPower(power);
             }
         //Same thing for second line, but it also must be at least a twentieth of a revolution beyond the first line to ensure the robot isn't still seeing the first line
         }  else if (state == 3) {
-            if (opmode.getLightVal() < blackVal - 0.02 && Math.abs(opmode.motorDriveLeftFront.getCurrentPosition()) > Math.abs(firstLine) + MoveStraight.REVS_MULTIPLIER / 5) {
+            if (((!above && opmode.getLightVal() < blackVal - 0.02) || (above && opmode.getLightVal() > blackVal + 0.08)) && Math.abs(opmode.motorDriveLeftFront.getCurrentPosition()) > Math.abs(firstLine) + MoveStraight.REVS_MULTIPLIER / 5) {
                 secondLine = opmode.motorDriveLeftFront.getCurrentPosition();
                 done = true;
             }

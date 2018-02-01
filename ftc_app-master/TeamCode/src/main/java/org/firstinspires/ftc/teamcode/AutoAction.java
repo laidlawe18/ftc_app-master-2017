@@ -9,8 +9,11 @@ public class AutoAction {
 
     //Used to tell the robot when to stop
     public boolean done;
+
+    //This variable is used in the subclasses of AutoAction to perform the various methods and lines of code within them in the class AutonomousOpMode
     public AutonomousOpMode opmode;
 
+    //Creates an instance of AutonomousOpMode in every subclass of AutoAction
     public AutoAction(AutonomousOpMode opmode) {
         this.opmode = opmode;
     }
